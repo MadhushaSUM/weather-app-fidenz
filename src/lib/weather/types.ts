@@ -68,3 +68,8 @@ interface WindDetails {
     windSpeed: number;
     windDirection: number;
 }
+
+export interface CachedWeatherData {
+    data: WeatherData;
+    timestamp: number;
+}
