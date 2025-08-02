@@ -1,43 +1,29 @@
 import {WeatherData} from "@/lib/weather/types";
 import {fetchWeatherDataFromAPI, transformWeatherData} from "@/lib/weather/api";
-import {getCachedData, setCachedData} from "@/lib/weather/cache";
 
 /**
  * service function to fetch weather data. Data is cached.
- * This is used in front-end
+ * This is used in /api/weather route
  * @param cityIds city code number array to get weather data
  */
 export const fetchWeatherData = async (
     cityIds: number[]
 ) : Promise<WeatherData[]> => {
 
-    let data = [];
-
     try {
-        for (const cityId of cityIds) {
-
-            const cacheKey = `weather_data_${cityId}`;
-
-            // 1. Check cache first
-            const cachedData = getCachedData(cacheKey);
-            if (cachedData) {
-                data.push(cachedData);
-                continue;
+        const weatherPromises = cityIds.map(async (cityId) => {
+            try {
+                const openWeatherRes = await fetchWeatherDataFromAPI(cityId);
+                return transformWeatherData(openWeatherRes);
+            } catch (error) {
+                console.error(`Error fetching weather for city ${cityId}:`, error);
+                return null;
             }
+        });
 
-            // 2. If not in cache or expired, fetch from API
-            const openWeatherRes = await fetchWeatherDataFromAPI(cityId);
+        const results = await Promise.all(weatherPromises);
 
-            // 3. Transform API data to our simplified format
-            const weatherData = transformWeatherData(openWeatherRes);
-
-            // 4. Store the transformed data in the cache
-            setCachedData(cacheKey, weatherData);
-
-            data.push(weatherData);
-        }
-
-        return data;
+        return results.filter((data): data is WeatherData => data !== null);
     } catch (error) {
         console.error("Error in fetchWeatherData service:", error);
         throw error;

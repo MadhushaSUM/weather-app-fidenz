@@ -5,6 +5,7 @@ const { openWeatherMapApiKey, openWeatherMapBaseUrl } = getConfig();
 
 /**
  * Fetches weather data for a city ID from OpenWeatherMap API.
+ * Data is cached leveraging Next.js built-in caching with fetch()
  * @param cityId OpenWeatherMap city ID.
  * @returns Promise resolving to the raw API response data.
  */
@@ -16,21 +17,21 @@ export const fetchWeatherDataFromAPI = async (
 
     try {
         console.log(`Fetching weather data from API for ID: ${cityId}`);
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            next: {
+                revalidate: 300,
+                tags: [`weather-${cityId}`]
+            }
+        });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error(
-                `OpenWeatherMap API request failed with status ${response.status}
-                : ${response.statusText}. 
-                Details: ${errorText}`
-            );
+            throw new Error(`Weather API error: ${response.status} ${response.statusText}`);
         }
 
-        return await response.json();
+        return response.json();
     } catch (error) {
-        console.error("Error fetching weather data from API:", error);
-        throw new Error(`Failed to fetch weather data: ${error instanceof Error ? error.message : String(error)}`);
+        console.error(`Error fetching weather for city ${cityId}:`, error);
+        throw error;
     }
 };
 
