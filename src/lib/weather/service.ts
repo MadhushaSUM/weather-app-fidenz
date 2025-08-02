@@ -1,27 +1,22 @@
-import {getConfig} from "@/lib/weather/config";
+import {WeatherData} from "@/lib/weather/types";
+import {fetchWeatherDataFromAPI, transformWeatherData} from "@/lib/weather/api";
 
-const { openWeatherMapApiKey, openWeatherMapBaseUrl } = getConfig();
-
+/**
+ * service function to fetch weather data.
+ * This is used in front-end
+ * @param cityIds city code number array to get weather data
+ */
 export const fetchWeatherData = async (
     cityIds: number[]
-) => {
+) : Promise<WeatherData[]> => {
     let data = [];
     try {
         for (const cityId of cityIds) {
-            const url = `${openWeatherMapBaseUrl}/weather?id=${Number(cityId)}&units=metric&appid=${openWeatherMapApiKey}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(errorText);
-            }
-
-             data.push(await response.json());
+            const openWeatherRes = await fetchWeatherDataFromAPI(cityId);
+            data.push(transformWeatherData(openWeatherRes));
         }
 
         return data;
-
     } catch (error) {
         console.error("Error in fetchWeatherData service:", error);
         throw error;
