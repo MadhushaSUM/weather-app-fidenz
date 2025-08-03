@@ -6,6 +6,8 @@ import "./globals.css";
 import {getQueryClient} from "@/providers/query-provider";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -33,7 +35,17 @@ export default function RootLayout(
             >
                 <AntdRegistry>
                     <QueryClientProvider client={queryClient}>
-                        {children}
+                        <div className="flex flex-col w-full min-h-screen h-full">
+                            <div className="md:h-24 h-16">
+                                <Header />
+                            </div>
+                            <div className="flex-grow">
+                                {children}
+                            </div>
+                            <div className="md:h-24 h-16">
+                                <Footer />
+                            </div>
+                        </div>
                         <ReactQueryDevtools initialIsOpen={false} />
                     </QueryClientProvider>
                 </AntdRegistry>

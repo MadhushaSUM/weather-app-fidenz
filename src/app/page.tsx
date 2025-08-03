@@ -1,32 +1,25 @@
-'use client';
+import WeatherList from "@/components/weather/WeatherList";
+import fs from 'fs';
+import path from 'path';
 
-import {Typography} from 'antd';
-import {useWeatherData, useWeatherDataForCity} from "@/hooks/weather/queries";
+export default async function Home() {
 
-export default function Home() {
-    const {
-        data: weatherData,
-    } = useWeatherData([1850147, 2644210, 2988507]);
+    let cityIds:number[] = [];
 
-    const {
-        data: individualCityWeatherData,
-    } = useWeatherDataForCity(3143244);
-
+    try {
+        const filePath = path.join(process.cwd(), 'public', 'cities.json');
+        const jsonData = fs.readFileSync(filePath, 'utf-8');
+        const cities = JSON.parse(jsonData);
+        cityIds = cities.List.map((city: any) => city.CityCode);
+    } catch (err) {
+        console.error("Failed to load weather data:", err);
+    }
 
     return (
         <main>
             <div className="flex justify-center">
-                <div className="flex flex-col w-3/4 gap-5">
-                    <div>
-                        <Typography>
-                            <pre>{JSON.stringify(weatherData, null, 2)}</pre>
-                        </Typography>
-                    </div>
-                    <div>
-                        <Typography>
-                            <pre>{JSON.stringify(individualCityWeatherData, null, 2)}</pre>
-                        </Typography>
-                    </div>
+                <div className="flex flex-col w-4/5 gap-5">
+                    <WeatherList cityIds={cityIds}/>
                 </div>
             </div>
         </main>
