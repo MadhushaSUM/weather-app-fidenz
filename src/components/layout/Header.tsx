@@ -41,7 +41,7 @@ export default function Header() {
                                         onClick={handleSignOut}
                                         block
                                     >
-                                        Log out
+                                        Sign out
                                     </Button>
                                 </div>
                             }
