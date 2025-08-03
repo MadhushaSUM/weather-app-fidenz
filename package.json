@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.1.0",
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@tanstack/react-query": "^5.84.1",
     "@tanstack/react-query-devtools": "^5.84.1",
     "antd": "^5.26.7",
+    "auth0": "^4.27.0",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0"
