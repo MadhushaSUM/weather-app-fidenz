@@ -42,6 +42,7 @@ export default function WeatherList({ cityIds }: WeatherListProps) {
                 <WeatherCard
                     cityWeather={item.data}
                     cardCoverColor={item.color}
+                    individual={false}
                     handleClose={() => closeWeatherCard(item.key)}
                 />
             </Col>
