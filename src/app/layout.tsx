@@ -8,6 +8,7 @@ import {QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import {UserProvider} from "@auth0/nextjs-auth0/client";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,26 +31,28 @@ export default function RootLayout(
 
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <AntdRegistry>
-                    <QueryClientProvider client={queryClient}>
-                        <div className="flex flex-col w-full min-h-screen h-full">
-                            <div className="md:h-24 h-16">
-                                <Header />
-                            </div>
-                            <div className="flex-grow">
-                                {children}
-                            </div>
-                            <div className="md:h-24 h-16">
-                                <Footer />
-                            </div>
+        <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+        <AntdRegistry>
+            <QueryClientProvider client={queryClient}>
+                <UserProvider>
+                    <div className="flex flex-col w-full min-h-screen h-full">
+                        <div className="md:h-24 h-16">
+                            <Header/>
                         </div>
-                        <ReactQueryDevtools initialIsOpen={false} />
-                    </QueryClientProvider>
-                </AntdRegistry>
-            </body>
+                        <div className="flex-grow">
+                            {children}
+                        </div>
+                        <div className="md:h-24 h-16">
+                            <Footer/>
+                        </div>
+                    </div>
+                </UserProvider>
+                <ReactQueryDevtools initialIsOpen={false}/>
+            </QueryClientProvider>
+        </AntdRegistry>
+        </body>
         </html>
     );
 }
