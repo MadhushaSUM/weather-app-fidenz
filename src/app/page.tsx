@@ -10,7 +10,7 @@ export default async function Home() {
         const filePath = path.join(process.cwd(), 'public', 'cities.json');
         const jsonData = fs.readFileSync(filePath, 'utf-8');
         const cities = JSON.parse(jsonData);
-        cityIds = cities.List.map((city: any) => city.CityCode);
+        cityIds = cities.List.map((city: {CityCode: number}) => city.CityCode);
     } catch (err) {
         console.error("Failed to load weather data:", err);
     }
